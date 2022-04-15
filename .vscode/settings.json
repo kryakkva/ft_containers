@@ -5,6 +5,14 @@
 		"__split_buffer": "cpp",
 		"__memory": "cpp",
 		"memory_resource": "cpp",
-		"memory": "cpp"
+		"memory": "cpp",
+		"__locale": "cpp",
+		"__node_handle": "cpp",
+		"bitset": "cpp",
+		"iosfwd": "cpp",
+		"istream": "cpp",
+		"ostream": "cpp",
+		"sstream": "cpp",
+		"string": "cpp"
 	}
 }

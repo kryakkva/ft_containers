@@ -2,6 +2,8 @@
 
 #include <vector>
 
+namespace ft
+{
 class test
 {
 private:
@@ -17,4 +19,5 @@ test::test(/* args */)
 
 test::~test()
 {
+}
 }
