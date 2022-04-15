@@ -1,0 +1,10 @@
+{
+	"files.associations": {
+		"vector": "cpp",
+		"__functional_base": "cpp",
+		"__split_buffer": "cpp",
+		"__memory": "cpp",
+		"memory_resource": "cpp",
+		"memory": "cpp"
+	}
+}
