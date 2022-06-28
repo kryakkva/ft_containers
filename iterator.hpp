@@ -81,7 +81,7 @@ namespace ft
 			return *this;
 		}
 
-		~vector_iterator() {}
+		virtual ~vector_iterator() {}
 
 		pointer base() const { return _iter; }
 
