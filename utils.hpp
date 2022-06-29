@@ -1,4 +1,5 @@
 #pragma once
+#include "iterator.hpp"
 
 namespace ft
 {
@@ -21,9 +22,9 @@ namespace ft
 		typedef noConstType type;
 	};
 
-	template<class T> struct remove_const { typedef T type; };
+	// template<class T> struct remove_const { typedef T type; };
 
-	template<class T> struct remove_const <const T> { typedef T type; };
+	// template<class T> struct remove_const <const T> { typedef T type; };
 
 // #######################################################################################
 // Enable if
@@ -119,7 +120,9 @@ namespace ft
 			if (first2 == last2 || *first2 < *first1)
 				return false;
 			else if (*first1 < *first2)
+			{
 				return true;
+			}
 			++first1; ++first2;
 		}
 		return (first2 != last2);

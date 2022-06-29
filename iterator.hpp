@@ -3,15 +3,13 @@
 #include <iterator>
 #include "utils.hpp"
 
-#define ADD 1
-#define SUBSTRACT 0
-
 namespace ft
 {
 	struct input_iterator_tag {};
 	struct forward_iterator_tag		  : public input_iterator_tag {};
 	struct bidirectional_iterator_tag : public forward_iterator_tag {};
 	struct random_access_iterator_tag : public bidirectional_iterator_tag {};
+	// struct random_access_iterator_tag {};
 
 	template <class Iterator>
 	struct iterator_traits
@@ -169,26 +167,26 @@ namespace ft
 		// bool operator!=(const vector_iterator& it) const	{ return (_iter != it._iter); }
 		// bool operator<(const vector_iterator& it) const		{ return (_iter > it._iter); }
 		// bool operator>(const vector_iterator& it) const		{ return (_iter < it._iter); }
-		bool operator<=(const vector_iterator& it) const	{ return (_iter >= it._iter); }
-		bool operator>=(const vector_iterator& it) const	{ return (_iter <= it._iter); }
+		// bool operator<=(const vector_iterator& it) const	{ return (_iter >= it._iter); }
+		// bool operator>=(const vector_iterator& it) const	{ return (_iter <= it._iter); }
 
 		// friend bool operator==(const vector_iterator& it_l, const vector_iterator& it_R);
 	private:
-		void movePtr(pointer& val, long n, bool sign) const
-		{
-			int mov;
+		// void movePtr(pointer& val, long n, bool sign) const
+		// {
+		// 	int mov;
 
-			// If addtion, mov will be positive. If substraction, negative.
-			if (sign == ADD)
-				mov = n > 0 ? mov = 1: mov = -1;
-			else
-				mov = n > 0 ? mov = -1: mov = 1;
+		// 	// If addtion, mov will be positive. If substraction, negative.
+		// 	if (sign == ADD)
+		// 		mov = n > 0 ? mov = 1: mov = -1;
+		// 	else
+		// 		mov = n > 0 ? mov = -1: mov = 1;
 
-			if (n < 0)
-				n *= -1;
-			for (; n > 0; --n)
-				val += mov;
-		}
+		// 	if (n < 0)
+		// 		n *= -1;
+		// 	for (; n > 0; --n)
+		// 		val += mov;
+		// }
 	};
 
 	template <class It_l, class It_r>
@@ -200,7 +198,8 @@ namespace ft
 	template <class It_l, class It_r>
 	bool operator!=(const It_l& it_l, const It_r& it_r)
 	{
-		return(&(*it_l) != &(*it_r));
+		// return(&(*it_l) != &(*it_r));
+		return !(it_l == it_r);
 	}
 
 	template <class It_l, class It_r>
@@ -212,18 +211,21 @@ namespace ft
 	template <class It_l, class It_r>
 	bool operator>(const It_l& it_l, const It_r& it_r)
 	{
-		return(&(*it_l) > &(*it_r));
+		return it_r < it_l;
+		// return(&(*it_l) > &(*it_r));
 	}
 
 	template <class It_l, class It_r>
 	bool operator<=(const It_l& it_l, const It_r& it_r)
 	{
-		return(&(*it_l) <= &(*it_r));
+		return !(it_r < it_l);
+		// return(&(*it_l) <= &(*it_r));
 	}
 
 	template <class It_l, class It_r>
 	bool operator>=(const It_l& it_l, const It_r& it_r)
 	{
-		return(&(*it_l) >= &(*it_r));
+		return !(it_l < it_r);
+		// return(&(*it_l) >= &(*it_r));
 	}
 }

@@ -5,6 +5,7 @@
 #include <iterator>
 #include "iterator.hpp"
 #include "reverse_iterator.hpp"
+#include <typeinfo>
 
 namespace ft
 {
@@ -75,28 +76,36 @@ public:
 	// 	throw "test";
 	// }
 
+	
 	template <class InputIterator>
 	vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
-			typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type = 0) : _alloc(alloc), _size(0)
+			typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type = 0) : _alloc(alloc), _size(0), _capacity(0)
 	{
-		_size = last - first;
-		_capacity = _size;
-		_arr = _alloc.allocate(_capacity);
+		// InputIterator tmp = first;
+		// while (tmp != last)
+		// {
+		// 	++tmp;
+		// 	_size++;
+		// }
+		// _capacity = _size;
+		// _arr = _alloc.allocate(_capacity);
 
-		size_type i = 0;
-		for (; first != last; ++i, ++first)
-		{
-			try
-			{
-				_alloc.construct(&_arr[i], *first);
-			}
-			catch(...)
-			{
-				freeAll(i);
-				throw ;
-			}
+		// size_type i = 0;
+		// for (; first != last; ++i, ++first)
+		// {
+		// 	try
+		// 	{
+		// 		_alloc.construct(&_arr[i], *first);
+		// 	}
+		// 	catch(...)
+		// 	{
+		// 		freeAll(i);
+		// 		throw ;
+		// 	}
 			
-		}
+		// }
+		_arr = _alloc.allocate(_capacity);
+		assign(first, last);
 	}
 
 	vector (const vector& x)
@@ -315,7 +324,14 @@ public:
 		{
 			_alloc.destroy(_arr + i);
 		}
-		size_type n = last - first;
+		// difference_type x = last - first;
+		size_type n = 0;
+		InputIterator tmp = first;
+		while (tmp != last)
+		{
+			++tmp;
+			n++;
+		}
 		
 		if (n > _capacity)
 		{
@@ -401,7 +417,7 @@ public:
 		{
 			reserve(newSize);
 		}
-		for (size_type x = 1; x <= _size; x++)
+		for (size_type x = 1; x <= _size - i; x++)
 		{
 			_arr[newSize - x] = _arr[_size - x];
 		}
@@ -416,42 +432,59 @@ public:
 	void insert(iterator position, InputIterator first, InputIterator last,
 				typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type = 0)
 	{
-		size_type n = last - first;
+		// size_type n = last - first;
+		size_type n = 0;
+		InputIterator tmp = first;
+		while (tmp != last)
+		{
+			++tmp;
+			n++;
+		}
 		if (!validate_iterators(first, last, n))
 			throw std::exception();
-		size_t new_size = _size + n;
-		int last_index = (position - begin()) + n - 1;
-		if (new_size > _capacity)
+		size_type i = position - begin();
+		size_type newSize = _size + n;
+		if (newSize > _capacity)
 		{
-			reserve(_size + n);
+			reserve(newSize);
 		}
-		_size = new_size;
-		for (int i = _size - 1; i >= 0; --i) {
-			if (i == last_index) {
-				for (; n > 0; --n, --i) {
-					_arr[i] = *--last;
-				}
-				return;
-			}
-			_arr[i] = _arr[i - n];
+		for (size_type x = 1; x <= _size - i; x++)
+		{
+			_arr[newSize - x] = _arr[_size - x];
 		}
+		for (; n > 0; i++, n--)
+		{
+			_arr[i] = *first++;
+		}
+		_size = newSize;
 	}
 
 	// ——————————————————————————————————————————————————————————————————————
 	// Erase
 	// ——————————————————————————————————————————————————————————————————————
 
-/*
 	iterator erase (iterator position)
 	{
-
+		_size--;
+		for (size_type i = position - begin(); i <= _size; i++)
+		{
+			_arr[i] = _arr[i + 1];
+		}
+		return position;
 	}
 
 	iterator erase (iterator first, iterator last)
 	{
-
+		size_type n = last - first;
+		size_type i = first - begin();
+		_size -= n;
+		for (size_type x = i; x <= _size; x++)
+		{
+			_arr[x] = _arr[x + n];
+		}
+		return _arr + i;
 	}
-*/
+
 	// ——————————————————————————————————————————————————————————————————————
 	// Swap, Clear
 	// ——————————————————————————————————————————————————————————————————————
@@ -489,41 +522,44 @@ public:
 	// ——————————————————————————————————————————————————————————————————————
 	// relational operators
 	// ——————————————————————————————————————————————————————————————————————
-
 	friend bool operator==(const vector& lhs, const vector& rhs)
 	{
 		if (lhs.size() != rhs.size())
+		return false;
+
+	for (ft::pair<const_iterator, const_iterator> it(lhs.begin(), rhs.begin());
+			it.first != lhs.end(); ++it.first, ++it.second)
+		if (*(it.first) != *(it.second))
 			return false;
-
-		for (ft::pair<const_iterator, const_iterator> it(lhs.begin(), rhs.begin());
-				it.first != lhs.end(); ++it.first, ++it.second)
-			if (*(it.first) != *(it.second))
-				return false;
-		return true;
+	return true;
 	}
-
-	friend bool operator!=(const vector& lhs, const vector& rhs)    { return !(lhs == rhs); }
-
-	friend bool operator<(const vector& lhs, const vector& rhs)
-	{
-		// if (lhs.size() < rhs.size())
-		// 	return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), lhs.end());
-		// else
-		// 	return false;
-		{
-			for (ft::pair<const_iterator, const_iterator> it(lhs.begin(), rhs.begin());
-					it.first != lhs.end() && it.second != rhs.end(); ++it.first, ++it.second)
-				if (*(it.first) < *(it.second))
-					return true;
-			return (lhs.size() < rhs.size());
-		}
-	}
-
-	friend bool operator>(const vector& lhs, const vector& rhs)     { return rhs < lhs; }
-
-	friend bool operator<=(const vector& lhs, const vector& rhs)    { return !(rhs < lhs); }
 	
-	friend bool operator>=(const vector& lhs, const vector& rhs)    { return !(lhs < rhs); }
+
+	// friend bool operator==(const vector& lhs, const vector& rhs)
+	// {
+	// 	if (lhs.size() != rhs.size())
+	// 		return false;
+
+	// 	for (ft::pair<const_iterator, const_iterator> it(lhs.begin(), rhs.begin());
+	// 			it.first != lhs.end(); ++it.first, ++it.second)
+	// 		if (*(it.first) != *(it.second))
+	// 			return false;
+	// 	return true;
+	// }
+
+	// friend bool operator!=(const vector& lhs, const vector& rhs)    { return !(lhs == rhs); }
+
+	// friend bool operator< (const vector &lhs, const vector &rhs) {
+	// 	// if (lhs.size() < rhs.size())
+	// 		return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+	// 	// return false;
+	// }
+
+	// friend bool operator>(const vector& lhs, const vector& rhs)     { return rhs < lhs; }
+
+	// friend bool operator<=(const vector& lhs, const vector& rhs)    { return !(rhs < lhs); }
+	
+	// friend bool operator>=(const vector& lhs, const vector& rhs)    { return !(lhs < rhs); }
 
 	// friend void swap (vector& x, vector& y)                         { 
 	// 	x.swap(y);
@@ -603,5 +639,36 @@ void swap (ft::vector<T, Alloc>& x, ft::vector<T, Alloc>& y)
 { 
 	x.swap(y);
 }
+
+// template< class T, class Alloc >
+// bool operator==(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+// {
+// 	if (lhs.size() != rhs.size())
+// 		return false;
+
+// 	for (ft::pair<const_iterator, const_iterator> it(lhs.begin(), rhs.begin());
+// 			it.first != lhs.end(); ++it.first, ++it.second)
+// 		if (*(it.first) != *(it.second))
+// 			return false;
+// 	return true;
+// }
+
+template< class T, class Alloc >
+bool operator!=(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)    { return !(lhs == rhs); }
+
+template< class T, class Alloc >
+bool operator< (const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs) {
+	return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+}
+
+template< class T, class Alloc >
+bool operator>(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)     { return rhs < lhs; }
+
+template< class T, class Alloc >
+bool operator<=(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)    { return !(rhs < lhs); }
+
+template< class T, class Alloc >
+bool operator>=(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)    { return !(lhs < rhs); }
+
 }
 

@@ -3,7 +3,7 @@
 #include <list>
 #include <iostream>
 
-#define TESTED_NAMESPACE ft
+#define TESTED_NAMESPACE std
 #define T_SIZE_TYPE typename TESTED_NAMESPACE::vector<T>::size_type
 #define TESTED_TYPE int
 // #define TESTED_TYPE foo<int>
@@ -113,32 +113,26 @@ void	cmp(const TESTED_NAMESPACE::vector<T, Alloc> &lhs, const TESTED_NAMESPACE::
 
 int		main(void)
 {
-	TESTED_NAMESPACE::vector<TESTED_TYPE> vct(10);
-	TESTED_NAMESPACE::vector<TESTED_TYPE> vct2;
+	TESTED_NAMESPACE::vector<TESTED_TYPE> vct(4);
+	TESTED_NAMESPACE::vector<TESTED_TYPE> vct2(4);
 
-	for (unsigned long int i = 0; i < vct.size(); ++i)
-		vct[i] = (vct.size() - i) * 3;
-	printSize(vct);
+	cmp(vct, vct);  // 0
+	cmp(vct, vct2); // 1
 
-	vct2.insert(vct2.end(), 42);
-	vct2.insert(vct2.begin(), 2, 21);
-	printSize(vct2);
+	vct2.resize(10);
 
-	vct2.insert(vct2.end() - 2, 42);
-	printSize(vct2);
+	cmp(vct, vct2); // 2
+	cmp(vct2, vct); // 3
 
-	vct2.insert(vct2.end(), 2, 84);
-	printSize(vct2);
+	vct[2] = 42;
 
-	vct2.resize(4);
-	printSize(vct2);
+	cmp(vct, vct2); // 4
+	cmp(vct2, vct); // 5
 
-	std::cout << "LAST\n";
-	vct2.insert(vct2.begin() + 2, vct.begin(), vct.end());
-	vct.clear();
-	printSize(vct2);
+	swap(vct, vct2);
 
-	printSize(vct);
+	cmp(vct, vct2); // 6
+	cmp(vct2, vct); // 7
+
 	return (0);
 }
-// }
