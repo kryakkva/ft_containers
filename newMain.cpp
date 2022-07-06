@@ -1,5 +1,7 @@
 #include <vector>
 #include "vector.hpp"
+#include <iterator>
+#include <iostream>
 
 #define NM ft
 
@@ -8,37 +10,35 @@ using namespace NM;
 int main()
 
 {
-	vector<int> vec_1;
+	// vector<int> vec_1;
 	vector<int> vec_2;
 
 	for (size_t i = 0; i < 16; i++)
 	{
-		vec_1.push_back(i);
+		// vec_1.push_back(i);
 		vec_2.push_back(i * 2);
 	}
-	std::cout << vec_1.capacity() << "	" << vec_2.capacity() << std::endl;
-	std::cout << vec_1.size() << "	" << vec_2.size() << std::endl;
+	// std::cout << "vec_1 cap=" << vec_1.capacity() << " size=" << vec_1.size() << std::endl;
+	std::cout << "vec_2 cap=" << vec_2.capacity() << " size=" << vec_2.size() << std::endl;
+	// vector<int> vec_1;
+	// vec_2 = vec_1;
+	// std::cout << "vec_1 cap=" << vec_1.capacity() << " size=" << vec_1.size() << std::endl;
+	vector<int>::iterator it_b = (vec_2.begin());
+	vector<int>::iterator it_e = (vec_2.end());
+	vec_2.erase(it_e, it_b);
+	std::cout << "vec_2 cap=" << vec_2.capacity() << " size=" << vec_2.size() << std::endl;
 
-	// while (it_1 != vec_1.end())
-	// {
-	// 	++it_1;
-	// 	++it_2;
-	// }
 	std::cout << std::endl;
 	std::cout << "BEGIN " << *vec_2.begin() << std::endl;
-	// vec_2.insert(vec_2.begin() + 2, vec_1.begin(), vec_1.begin() + 4);
-	vec_2.insert(vec_2.begin() + 2, 8, 123);
-	// std::cout << vec_1.capacity() << "	" << vec_2.capacity() << std::endl;
-	// std::cout << vec_1.size() << "	" << vec_2.size() << std::endl;
-	// vec_1.swap(vec_2);
-	vector<int>::iterator it_1 = vec_1.begin();
+	// vec_2.insert(vec_2.begin() + 2, 8, 123);
+	// vector<int>::iterator it_1 = vec_1.begin();
 	vector<int>::iterator it_2 = vec_2.begin();
-	it_1 = vec_1.begin();
+	// it_1 = vec_1.begin();
 	it_2 = vec_2.begin();
 	while (it_2 != vec_2.end())
 	{
-		std::cout << *it_1 << "	" << *it_2 << std::endl;
-		++it_1;
+		std::cout <<  "	" << *it_2 << std::endl;
+		// ++it_1;
 		++it_2;
 	}
 	return 0;
