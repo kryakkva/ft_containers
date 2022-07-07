@@ -1,26 +1,10 @@
 #pragma once
 
-#include <iterator>
+// #include <iterator>
 #include "utils.hpp"
 
 namespace ft
 {
-	struct input_iterator_tag {};
-	struct forward_iterator_tag		  : public input_iterator_tag {};
-	struct bidirectional_iterator_tag : public forward_iterator_tag {};
-	struct random_access_iterator_tag : public bidirectional_iterator_tag {};
-	// struct random_access_iterator_tag {};
-
-	template <class Iterator>
-	struct iterator_traits
-	{
-		typedef typename Iterator::difference_type		difference_type;
-		typedef typename Iterator::value_type			value_type;
-		typedef typename Iterator::pointer				pointer;
-		typedef typename Iterator::reference			reference;
-		typedef typename Iterator::iterator_category	iterator_category;
-	};
-
 	template <class T>
 	struct iterator_traits<T*>
 	{
@@ -41,18 +25,6 @@ namespace ft
 		typedef ft::random_access_iterator_tag	iterator_category;
 	};
 
-	template <class Category, class T, class Distance = ptrdiff_t,
-			  class Pointer = T*, class Reference = T&>
-	struct iterator
-	{
-		typedef T			value_type;
-		typedef Distance	difference_type;
-		typedef Pointer		pointer;
-		typedef Reference	reference;
-		typedef Category	iterator_category;
-	};
-
-
 	template <class T, bool isConst>
 	class vector_iterator
 	{
@@ -68,8 +40,6 @@ namespace ft
 		vector_iterator() {};
 		vector_iterator(pointer x) : _iter(x) {}
 		vector_iterator(const vector_iterator<T, false>& x) : _iter(&(*x)) {}
-		// vector_iterator(const vector_iterator<typename remove_const<value_type>::type, false> & src) : _iter(&(*src)) {}
-		// vector_iterator(const vector_iterator<T, true>& x) { _iter = const_cast<pointer>(x.base()); }
 		vector_iterator& operator= (const vector_iterator& x)
 		{
 			// if (this != &x)
@@ -152,41 +122,6 @@ namespace ft
 			vector_iterator newIt(it);
 			return (newIt -= n);
 		}
-
-		// friend difference_type operator-(const vector_iterator& x, const vector_iterator& y)
-		// {
-		// 	return (x - y);
-		// }
-
-		// friend difference_type operator+(const vector_iterator& x, const vector_iterator& y)
-		// {
-		// 	return (x + y);
-		// }
-
-		// bool operator==(const vector_iterator& it) const	{ return (_iter == it._iter); }
-		// bool operator!=(const vector_iterator& it) const	{ return (_iter != it._iter); }
-		// bool operator<(const vector_iterator& it) const		{ return (_iter > it._iter); }
-		// bool operator>(const vector_iterator& it) const		{ return (_iter < it._iter); }
-		// bool operator<=(const vector_iterator& it) const	{ return (_iter >= it._iter); }
-		// bool operator>=(const vector_iterator& it) const	{ return (_iter <= it._iter); }
-
-		// friend bool operator==(const vector_iterator& it_l, const vector_iterator& it_R);
-	private:
-		// void movePtr(pointer& val, long n, bool sign) const
-		// {
-		// 	int mov;
-
-		// 	// If addtion, mov will be positive. If substraction, negative.
-		// 	if (sign == ADD)
-		// 		mov = n > 0 ? mov = 1: mov = -1;
-		// 	else
-		// 		mov = n > 0 ? mov = -1: mov = 1;
-
-		// 	if (n < 0)
-		// 		n *= -1;
-		// 	for (; n > 0; --n)
-		// 		val += mov;
-		// }
 	};
 
 	template <class It_l, class It_r>
