@@ -3,7 +3,8 @@
 
 namespace ft{
 
-template <class Iterator> class reverse_iterator
+template <class Iterator> 
+class reverse_iterator
 {
 	public:
 		typedef	Iterator	iterator_type;

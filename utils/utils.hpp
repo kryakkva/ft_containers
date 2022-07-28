@@ -1,10 +1,39 @@
 #pragma once
 
 #include <iostream>
-// #include "vector_iterator.hpp"
 
+template <class value_type>
+struct Node
+{
+	public:
+	explicit Node(value_type* other = NULL) :
+			_isRed(true), _isNil(false), _parent(NULL), _left(NULL), _right(NULL), _val(other) {}
+
+	bool		_isRed;
+	bool		_isNil;
+	Node* 		_parent;
+	Node*		_left;
+	Node*		_right; 
+	value_type *_val;
+
+	Node(const Node& other) { *this = other; }
+
+	Node& operator=(const Node& other)
+	{
+		_isRed = other._isRed;
+		_isNil = other._isNil;
+		_parent = other._parent;
+		_left = other._left;
+		_right = other._right;
+		_val = other._val;
+		return *this;
+	}
+
+	virtual ~Node() {}
+};
 namespace ft
 {
+
 // #######################################################################################
 // ITERATOR
 // #######################################################################################
@@ -33,6 +62,18 @@ namespace ft
 		typedef Pointer		pointer;
 		typedef Reference	reference;
 		typedef Category	iterator_category;
+	};	
+
+	template<class T>
+	struct remove_const
+	{
+		typedef T type;
+	};
+
+	template<class T>
+	struct remove_const <const T>
+	{
+		typedef T type;
 	};
 	
 // #######################################################################################
@@ -134,6 +175,43 @@ namespace ft
 			return *this;
 		}
 	};
+///*
+	template <class T1, class T2>
+	bool operator==(const pair<T1, T2> &lhs, const pair<T1, T2> &rhs) {
+		return lhs.first == rhs.first && lhs.second == rhs.second;
+	}
+
+	template <class T1, class T2>
+	bool operator!=(const pair<T1, T2> &lhs, const pair<T1, T2> &rhs) {
+		return !(lhs == rhs);
+	}
+
+	template <class T1, class T2>
+	bool operator<(const pair<T1, T2> &lhs, const pair<T1, T2> &rhs) {
+		return lhs.first < rhs.first ||
+			(!(rhs.first < lhs.first) && lhs.second < rhs.second);
+	}
+
+	template <class T1, class T2>
+	bool operator<=(const pair<T1, T2> &lhs, const pair<T1, T2> &rhs) {
+		return !(rhs < lhs);
+	}
+
+	template <class T1, class T2>
+	bool operator>(const pair<T1, T2> &lhs, const pair<T1, T2> &rhs) {
+		return rhs < lhs;
+	}
+
+	template <class T1, class T2>
+	bool operator>=(const pair<T1, T2> &lhs, const pair<T1, T2> &rhs) {
+		return !(lhs < rhs);
+	}
+//*/
+	template <class T1,class T2>
+	pair<T1,T2> make_pair (T1 x, T2 y)
+	{
+		return ( pair<T1,T2>(x,y) );
+	}
 	
 // #######################################################################################
 // Lexicographical compare & equal
@@ -161,7 +239,7 @@ namespace ft
 	{
 		while (first1!=last1) {
 			if (!(*first1 == *first2))
-			return false;
+				return false;
 			++first1; ++first2;
 		}
 		return true;

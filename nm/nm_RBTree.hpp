@@ -13,6 +13,8 @@ class RBTree{
 		typedef Alloc	allocator_type;
 		typedef typename Alloc::template
 			                rebind<Node<Value> >::other            node_allocator;
+		typedef typename Alloc::template
+			                rebind<RBTree<Value, Compare, Alloc> >::other            tree_allocator;
 		//typedef Node_Alloc node_allocator_type;
 		typedef	typename node_allocator::pointer node_pointer;
 		typedef typename allocator_type::reference reference;
@@ -28,6 +30,7 @@ class RBTree{
 	private:
 		allocator_type				_val_alloc;
 		node_allocator				_node_alloc;
+		tree_allocator				_tree_alloc;
 		value_compare 				_compare;
 		node_pointer				_nil;
 		node_pointer				_header;
@@ -214,35 +217,35 @@ class RBTree{
 
 		//PUBLIC FUNCTIONS
 	public:
-		iterator	end(){
-			return (iterator(_header));
-		}
+	iterator	end(){
+		return (iterator(_header));
+	}
 
-		const_iterator	end() const{
-			return (const_iterator(_header));
-		}
+	const_iterator	end() const{
+		return (const_iterator(_header));
+	}
 
-		iterator	begin(){
-			return (iterator(_size == 0 ? _header : iterator(tree_min(_root))));
-		}
-		const_iterator	begin() const{
-			return (const_iterator(_size == 0 ? _header : const_iterator(tree_min(_root))));
-		}
+	iterator	begin(){
+		return (iterator(_size == 0 ? _header : iterator(tree_min(_root))));
+	}
+	const_iterator	begin() const{
+		return (const_iterator(_size == 0 ? _header : const_iterator(tree_min(_root))));
+	}
 
-		reverse_iterator rbegin(){
-			return (reverse_iterator(end()));
-		}	
-		const_reverse_iterator rbegin() const{
-			return (const_reverse_iterator(end()));
-		}	
+	reverse_iterator rbegin(){
+		return (reverse_iterator(end()));
+	}	
+	const_reverse_iterator rbegin() const{
+		return (const_reverse_iterator(end()));
+	}	
 
-		reverse_iterator rend(){
-			return (reverse_iterator(begin()));
-		}	
+	reverse_iterator rend(){
+		return (reverse_iterator(begin()));
+	}	
 
-		const_reverse_iterator rend() const{
-			return (const_reverse_iterator(begin()));
-		}	
+	const_reverse_iterator rend() const{
+		return (const_reverse_iterator(begin()));
+	}	
 
 		pointer	create_value(const value_type &value){
 			pointer new_val = _val_alloc.allocate(1);
@@ -545,7 +548,7 @@ class RBTree{
 		}
 
 		size_type max_size() const{
-			return _node_alloc.max_size();
+			return std::min<size_type> (_tree_alloc.max_size(), std::numeric_limits<difference_type >::max());
 		}
 		
 		bool empty() const{
@@ -643,10 +646,10 @@ bool operator<(const RBTree<Content, Compare, Alloc>& lhs,  const RBTree<Content
 	return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
 }
 
-template<class Content, class Compare, class Alloc>
-bool operator>(const RBTree<Content, Compare, Alloc>& lhs,  const RBTree<Content, Compare, Alloc>& rhs){
-	return (lhs < rhs);
-}
+// template<class Content, class Compare, class Alloc>
+// bool operator>(const RBTree<Content, Compare, Alloc>& lhs,  const RBTree<Content, Compare, Alloc>& rhs){
+// 	return (lhs < rhs);
+// }
 
 
 template<class Content, class Compare, class Alloc>

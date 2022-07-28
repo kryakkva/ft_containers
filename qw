@@ -1,0 +1,2 @@
+Tree<ft::pair<const int, int>, ft::map<int, int, std::__1::less<int>, std::__1::allocator<ft::pair<const int, int> > >::value_compare, std::__1::allocator<ft::pair<const int, int> > >::node_pointer' (aka 'Node<ft::pair<const int, int> > *')
+Tree<ft::pair<const int, int>, ft::map<int, int, std::__1::less<int>, std::__1::allocator<ft::pair<const int, int> > >::value_compare, std::__1::allocator<ft::pair<const int, int> > >::iterator' (aka 'map_iterator<ft::pair<const int, int>, false>')

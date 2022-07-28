@@ -1,8 +1,6 @@
 #ifndef STACK_HPP
 # define STACK_HPP
-// #pragma once
 
-// # include <vector>
 # include "vector.hpp"
 
 namespace ft

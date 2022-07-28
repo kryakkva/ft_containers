@@ -59,7 +59,7 @@ class TreeIter {
 		}
 
 		node_pointer tree_max(node_pointer n) const {
-			while (!n->right->is_nil)
+			while (n->right != NULL && !n->right->is_nil)
 				n = n->right;
 			return n;
 		}

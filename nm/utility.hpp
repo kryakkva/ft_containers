@@ -9,7 +9,8 @@ template<class T> struct remove_const { typedef T type; };
 template<class T> struct remove_const <const T> { typedef T type; };
 
 
-template <class Iterator> class iterator_traits
+template <class Iterator> 
+class iterator_traits
 {
 	public:
 		typedef typename Iterator::difference_type	difference_type;
@@ -19,7 +20,8 @@ template <class Iterator> class iterator_traits
 		typedef typename Iterator::iterator_category	iterator_category;
 };
 
-template <class T> class iterator_traits<T*>
+template <class T> 
+class iterator_traits<T*>
 {
 	public:
 		typedef std::ptrdiff_t	difference_type;
@@ -29,7 +31,8 @@ template <class T> class iterator_traits<T*>
 		typedef	std::random_access_iterator_tag	iterator_category;
 };
 
-template <class T> class iterator_traits<const T*>
+template <class T> 
+class iterator_traits<const T*>
 {
 	public:
 		typedef std::ptrdiff_t	difference_type;

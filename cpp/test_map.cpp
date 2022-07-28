@@ -1,8 +1,10 @@
-#include <map>
+// #include <map>
 #include <iostream>
-#include "map.hpp"
+#include <list>
+// #include "../nm/map.hpp"
+#include "../map.hpp"
 
-#define TESTED_NAMESPACE std
+#define TESTED_NAMESPACE ft
 
 template <typename T>
 class foo {
@@ -34,13 +36,18 @@ class foo {
 };
 
 #define T1 char
-#define T2 foo<float>
+#define T2 int
 #define _pair TESTED_NAMESPACE::pair
+
+// typedef TESTED_NAMESPACE::map<T1, T2>::value_type T3;
 
 typedef TESTED_NAMESPACE::map<T1, T2> _map;
 typedef _map::const_iterator const_it;
+typedef _pair<const T1, T2> T3;
 
-static unsigned int i = 0;
+// typedef _pair<const T1, T2> T3;
+
+// static unsigned int i = 0;
 
 template <typename T>
 std::string	printPair(const T &iterator, bool nl = true, std::ostream &o = std::cout)
@@ -59,39 +66,75 @@ void	printSize(T_MAP const &mp, bool print_content = 1)
 	if (print_content)
 	{
 		typename T_MAP::const_iterator it = mp.begin(), ite = mp.end();
+		// --ite;
+		// std::cout << "IT " << ite->first << std::endl;
+		// ++ite;
 		std::cout << std::endl << "Content is:" << std::endl;
 		for (; it != ite; ++it)
+		{
+			// std::cout << "ITER " <<  << std::endl;
 			std::cout << "- " << printPair(it, false) << std::endl;
+		}
 	}
 	std::cout << "###############################################" << std::endl;
 }
 
-
-void	ft_comp(const _map &mp, const const_it &it1, const const_it &it2)
+template <typename T>
+T	inc(T it, int n)
 {
-	bool res[2];
+	while (n-- > 0)
+		++it;
+	return (it);
+}
 
-	std::cout << "\t-- [" << ++i << "] --" << std::endl;
-	res[0] = mp.key_comp()(it1->first, it2->first);
-	res[1] = mp.value_comp()(*it1, *it2);
-	std::cout << "with [" << it1->first << " and " << it2->first << "]: ";
-	std::cout << "key_comp: " << res[0] << " | " << "value_comp: " << res[1] << std::endl;
+template <typename T>
+T	dec(T it, int n)
+{
+	while (n-- > 0)
+		--it;
+	return (it);
+}
+
+template <typename TT1, typename TT2>
+void	printReverse(TESTED_NAMESPACE::map<TT1, TT2> &mp)
+{
+	typename TESTED_NAMESPACE::map<TT1, TT2>::iterator it = mp.end(), ite = mp.begin();
+
+	std::cout << "printReverse:" << std::endl;
+	while (it != ite) {
+		it--;
+		std::cout << "-> " << printPair(it, false) << std::endl;
+	}
+	std::cout << "_______________________________________________" << std::endl;
 }
 
 int		main(void)
 {
-	_map	mp;
+	std::list<T3> lst;
+	unsigned int lst_size = 5;
+	for (unsigned int i = 0; i < lst_size; ++i)
+		lst.push_back(T3('a' + i, (i + 1) * 7));
 
-	mp['a'] = 2.3;
-	mp['b'] = 1.4;
-	mp['c'] = 0.3;
-	mp['d'] = 4.2;
+	TESTED_NAMESPACE::map<T1, T2> mp(lst.begin(), lst.end());
+	TESTED_NAMESPACE::map<T1, T2>::iterator it_ = mp.begin();
+	TESTED_NAMESPACE::map<T1, T2>::reverse_iterator it(it_), ite;
 	printSize(mp);
 
-	for (const_it it1 = mp.begin(); it1 != mp.end(); ++it1)
-		for (const_it it2 = mp.begin(); it2 != mp.end(); ++it2)
-			ft_comp(mp, it1, it2);
+	std::cout << (it_ == it.base()) << std::endl;
+	std::cout << (it_ == dec(it, 3).base()) << std::endl;
 
-	printSize(mp);
+	printPair(it.base());
+	printPair(inc(it.base(), 1));
+
+	std::cout << "TEST OFFSET" << std::endl;
+	--it;
+	printPair(it);
+	printPair(it.base());
+
+	it = mp.rbegin(); ite = mp.rend();
+	while (it != ite)
+		std::cout << "[rev] " << printPair(it++, false) << std::endl;
+	printReverse(mp);
+
 	return (0);
 }
