@@ -14,7 +14,7 @@ struct Node
 	Node* 		_parent;
 	Node*		_left;
 	Node*		_right; 
-	value_type *_val;
+	value_type*	_val;
 
 	Node(const Node& other) { *this = other; }
 
@@ -31,8 +31,16 @@ struct Node
 
 	virtual ~Node() {}
 };
+
 namespace ft
 {
+	template <class S1, class S2>
+	void ft_swap (S1 &a, S2 &b)
+	{
+		S1 tmp = a;
+		a = b;
+		b = tmp;
+	}
 
 // #######################################################################################
 // ITERATOR
@@ -51,6 +59,26 @@ namespace ft
 		typedef typename Iterator::pointer				pointer;
 		typedef typename Iterator::reference			reference;
 		typedef typename Iterator::iterator_category	iterator_category;
+	};
+
+	template <class T>
+	struct iterator_traits<T*>
+	{
+		typedef ptrdiff_t						difference_type;
+		typedef T								value_type;
+		typedef T*								pointer;
+		typedef T&								reference;
+		typedef ft::random_access_iterator_tag	iterator_category;
+	};
+
+	template <class T>
+	struct iterator_traits<const T*>
+	{
+		typedef ptrdiff_t						difference_type;
+		typedef T								value_type;
+		typedef const T*						pointer;
+		typedef const T&						reference;
+		typedef ft::random_access_iterator_tag	iterator_category;
 	};
 
 	template <class Category, class T, class Distance = ptrdiff_t,
@@ -77,73 +105,75 @@ namespace ft
 	};
 	
 // #######################################################################################
-// Is const
-// #######################################################################################
-
-	template <bool isConst, typename noConstType, typename ConstType>
-	struct IsConst {};
-
-	template <typename noConstType, typename ConstType>
-	struct IsConst<true, noConstType, ConstType>
-	{
-		typedef ConstType type;
-	};
-	 
-	template <typename noConstType, typename ConstType>
-	struct IsConst<false, noConstType, ConstType>
-	{
-		typedef noConstType type;
-	};
-
-// #######################################################################################
 // Enable if
 // #######################################################################################
 
-	template <bool B>
+	template <bool B, class T = void>
     struct enable_if {};
 
-    template <>
-    struct enable_if<true> { typedef int type; };
+    template <class T>
+    struct enable_if<true, T> { typedef T type; };
             
 // #######################################################################################
 // Is integral
 // #######################################################################################
 
-    template <typename T>
-    struct is_integral { static const bool value = false; };
+	template <class T, bool v>
+	struct integral_constant
+	{
+		static const bool value = v;
+		typedef T						value_type;
+		typedef integral_constant<T,v>	type;
+		operator value_type() const { return v; }
+	};
 
-    template <>
-    struct is_integral<bool> { static const bool value = true; };
-        
-    template <>
-    struct is_integral<char> { static const bool value = true; };
+	template <class T>
+	struct is_integral : public ft::integral_constant<T, false> {};
 
-    template <>
-    struct is_integral<short> { static const bool value = true; };
+	template <>
+	struct is_integral<bool> : public ft::integral_constant<bool, true>  {};
+		
+	template <>
+	struct is_integral<char> : public ft::integral_constant<bool, true>  {};
 
-    template <>
-    struct is_integral<int> { static const bool value = true; };
+	template <>
+	struct is_integral<char16_t> : public ft::integral_constant<bool, true>  {};
 
-    template <>
-    struct is_integral<long> { static const bool value = true; };
+	template <>
+	struct is_integral<char32_t> : public ft::integral_constant<bool, true>  {};
 
-    template <>
-    struct is_integral<long long> { static const bool value = true; };
+	template <>
+	struct is_integral<wchar_t> : public ft::integral_constant<bool, true>  {};
 
-    template <>
-    struct is_integral<unsigned char> { static const bool value = true; };
+	template <>
+	struct is_integral<signed char> : public ft::integral_constant<bool, true>  {};
 
-    template <>
-    struct is_integral<unsigned short> { static const bool value = true; };
+	template <>
+	struct is_integral<short int> : public ft::integral_constant<bool, true>  {};
 
-    template <>
-    struct is_integral<unsigned int> { static const bool value = true; };
+	template <>
+	struct is_integral<int> : public ft::integral_constant<bool, true>  {};
 
-    template <>
-    struct is_integral<unsigned long> { static const bool value = true; };
+	template <>
+	struct is_integral<long int> : public ft::integral_constant<bool, true>  {};
 
-    template <>
-    struct is_integral<unsigned long long> { static const bool value = true; };
+	template <>
+	struct is_integral<long long int> : public ft::integral_constant<bool, true>  {};
+
+	template <>
+	struct is_integral<unsigned char> : public ft::integral_constant<bool, true>  {};
+
+	template <>
+	struct is_integral<unsigned short int> : public ft::integral_constant<bool, true>  {};
+
+	template <>
+	struct is_integral<unsigned int> : public ft::integral_constant<bool, true>  {};
+
+	template <>
+	struct is_integral<unsigned long int> : public ft::integral_constant<bool, true>  {};
+
+	template <>
+	struct is_integral<unsigned long long int> : public ft::integral_constant<bool, true>  {};
 
 // #######################################################################################
 // Pair

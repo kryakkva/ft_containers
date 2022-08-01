@@ -18,8 +18,8 @@ public:
 	typedef typename allocator_type::const_pointer		const_pointer;
 	typedef ptrdiff_t									difference_type;
 	typedef size_t										size_type;
-	typedef	ft::vector_iterator<value_type, false>		iterator;
-	typedef	ft::vector_iterator<value_type, true>		const_iterator;
+	typedef	ft::vector_iterator<value_type>		iterator;
+	typedef	ft::vector_iterator<const value_type>		const_iterator;
 	typedef ft::reverse_iterator<iterator>				reverse_iterator;
 	typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
 
@@ -56,7 +56,7 @@ public:
 	
 	template <class InputIterator>
 	vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
-			typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type = 0) : _alloc(alloc), _size(0), _capacity(0)
+			typename ft::enable_if<!ft::is_integral<InputIterator>::value, void>::type* = 0) : _alloc(alloc), _size(0), _capacity(0)
 	{
 		InputIterator tmp = first;
 		while (tmp != last)
@@ -278,8 +278,8 @@ public:
 	// ——————————————————————————————————————————————————————————————————————
 
 	template <class InputIterator>
-	void assign (InputIterator first, InputIterator last,
-					typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type = 0)
+	typename ft::enable_if<!ft::is_integral<InputIterator>::value, void>::type
+	assign (InputIterator first, InputIterator last)
 	{
 		for (size_t i = 0; i < _size; i++)
 		{
@@ -394,8 +394,8 @@ public:
 	}
 
 	template <class InputIterator>
-	void insert(iterator position, InputIterator first, InputIterator last,
-				typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type = 0)
+	typename ft::enable_if<!ft::is_integral<InputIterator>::value, void>::type
+	insert(iterator position, InputIterator first, InputIterator last)
 	{
 		// size_type n = last - first;
 		size_type n = 0;
@@ -467,10 +467,10 @@ public:
 
 	void swap (vector& x)
 	{
-		ft_swap(_size, x._size);
-		ft_swap(_capacity, x._capacity);
-		ft_swap(_arr, x._arr);
-		ft_swap(_alloc, x._alloc);
+		ft::ft_swap(_size, x._size);
+		ft::ft_swap(_capacity, x._capacity);
+		ft::ft_swap(_arr, x._arr);
+		ft::ft_swap(_alloc, x._alloc);
 	}
 
 	void clear()
@@ -497,14 +497,6 @@ private:
 	size_type		_size;
 	size_type		_capacity;
 private:
-	template <class S1, class S2>
-	void ft_swap (S1 &a, S2 &b)
-	{
-		S1 tmp = a;
-		a = b;
-		b = tmp;
-	}
-
 	void freeAll(size_type i)
 	{
 		while (i)

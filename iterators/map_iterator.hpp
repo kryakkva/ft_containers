@@ -4,25 +4,25 @@
 
 namespace ft
 {
-	template <class T>
-	struct iterator_traits<T*>
-	{
-		typedef ptrdiff_t						difference_type;
-		typedef T								value_type;
-		typedef T*								pointer;
-		typedef T&								reference;
-		typedef ft::bidirectional_iterator_tag	iterator_category;
-	};
+	// template <class T>
+	// struct iterator_traits<T*>
+	// {
+	// 	typedef ptrdiff_t						difference_type;
+	// 	typedef T								value_type;
+	// 	typedef T*								pointer;
+	// 	typedef T&								reference;
+	// 	typedef ft::bidirectional_iterator_tag	iterator_category;
+	// };
 
-	template <class T>
-	struct iterator_traits<const T*>
-	{
-		typedef ptrdiff_t						difference_type;
-		typedef const T							value_type;
-		typedef const T*						pointer;
-		typedef const T&						reference;
-		typedef ft::bidirectional_iterator_tag	iterator_category;
-	};
+	// template <class T>
+	// struct iterator_traits<const T*>
+	// {
+	// 	typedef ptrdiff_t						difference_type;
+	// 	typedef const T							value_type;
+	// 	typedef const T*						pointer;
+	// 	typedef const T&						reference;
+	// 	typedef ft::bidirectional_iterator_tag	iterator_category;
+	// };
 
 	template <typename T>
 	class map_iterator
@@ -33,7 +33,7 @@ namespace ft
 		typedef typename ft::iterator_traits<T*>::reference									reference;
 		typedef typename ft::iterator_traits<T*>::pointer									pointer;
 		typedef typename ft::iterator_traits<T*>::difference_type							difference_type;
-		typedef Node<typename ft::remove_const<value_type>::type >*							node_pointer;
+		typedef Node<typename ft::remove_const<value_type>::type>*							node_pointer;
 		// typedef Node<value_type>*							node_pointer;
 	protected:
 		node_pointer _iter;
@@ -57,9 +57,8 @@ namespace ft
 	public:
 		map_iterator() {};
 		map_iterator(node_pointer x) : _iter(x) {}
-		// map_iterator(void* x) : _iter(static_cast<node_pointer>(x)) {}
-		map_iterator(const map_iterator<typename ft::remove_const<value_type>::type >& x) { *this = x; }
-		map_iterator& operator= (const map_iterator<typename ft::remove_const<value_type>::type >& x)
+		map_iterator(const map_iterator<typename ft::remove_const<value_type>::type>& x) { *this = x; }
+		map_iterator& operator= (const map_iterator<typename ft::remove_const<value_type>::type>& x)
 		{
 			_iter = x.iter();
 			return *this;
@@ -112,7 +111,7 @@ namespace ft
 		}
 
 		map_iterator operator++(int) {
-			map_iterator<value_type> temp = *this;
+			map_iterator temp = *this;
 			if (!_iter->_right->_isNil) {
 				_iter = tree_min(_iter->_right);
 			}
@@ -128,7 +127,7 @@ namespace ft
 		}
 
 		map_iterator operator--(int) {
-			map_iterator<value_type> temp = *this;
+			map_iterator temp = *this;
 			if (_iter->_left &&!_iter->_left->_isNil) {
 				_iter = tree_max(_iter->_left);
 			}

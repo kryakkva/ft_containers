@@ -5,41 +5,41 @@
 
 namespace ft
 {
-	template <class T>
-	struct iterator_traits<T*>
-	{
-		typedef ptrdiff_t						difference_type;
-		typedef T								value_type;
-		typedef T*								pointer;
-		typedef T&								reference;
-		typedef ft::random_access_iterator_tag	iterator_category;
-	};
+	// template <class T>
+	// struct iterator_traits<T*>
+	// {
+	// 	typedef ptrdiff_t						difference_type;
+	// 	typedef T								value_type;
+	// 	typedef T*								pointer;
+	// 	typedef T&								reference;
+	// 	typedef ft::random_access_iterator_tag	iterator_category;
+	// };
+
+	// template <class T>
+	// struct iterator_traits<const T*>
+	// {
+	// 	typedef ptrdiff_t						difference_type;
+	// 	typedef T								value_type;
+	// 	typedef const T*						pointer;
+	// 	typedef const T&						reference;
+	// 	typedef ft::random_access_iterator_tag	iterator_category;
+	// };
 
 	template <class T>
-	struct iterator_traits<const T*>
-	{
-		typedef ptrdiff_t						difference_type;
-		typedef T								value_type;
-		typedef const T*						pointer;
-		typedef const T&						reference;
-		typedef ft::random_access_iterator_tag	iterator_category;
-	};
-
-	template <class T, bool isConst>
 	class vector_iterator
 	{
 	public:
-		typedef T													value_type;
-		typedef ptrdiff_t											difference_type;
-		typedef typename ft::IsConst<isConst, T*, const T*>::type	pointer;
-		typedef typename ft::IsConst<isConst, T&, const T&>::type	reference;
+		typedef typename ft::iterator_traits<T*>::value_type		value_type;
+		typedef typename ft::iterator_traits<T*>::difference_type	difference_type;
+		typedef typename ft::iterator_traits<T*>::pointer			pointer;
+		typedef typename ft::iterator_traits<T*>::reference			reference;
 		typedef ft::random_access_iterator_tag						iterator_category;
 	protected:
 		pointer _iter;
 	public:
 		vector_iterator() {};
 		vector_iterator(pointer x) : _iter(x) {}
-		vector_iterator(const vector_iterator<T, false>& x) : _iter(&(*x)) {}
+		vector_iterator(const vector_iterator<value_type>& x) : _iter(&(*x)) {}
 		vector_iterator& operator= (const vector_iterator& x)
 		{
 			// if (this != &x)
