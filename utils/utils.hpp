@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <iterator>
 
 template <class value_type>
 struct Node
@@ -18,7 +19,7 @@ struct Node
 
 	Node(const Node& other) { *this = other; }
 
-	Node& operator=(const Node& other)
+	Node& operator=(const Node<value_type>& other)
 	{
 		_isRed = other._isRed;
 		_isNil = other._isNil;
@@ -75,7 +76,7 @@ namespace ft
 	struct iterator_traits<const T*>
 	{
 		typedef ptrdiff_t						difference_type;
-		typedef T								value_type;
+		typedef T							value_type;
 		typedef const T*						pointer;
 		typedef const T&						reference;
 		typedef ft::random_access_iterator_tag	iterator_category;

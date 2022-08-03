@@ -1,7 +1,8 @@
 #include <map>
+#include <set>
 #include <iostream>
 #include <list>
-#include "../map.hpp"
+#include "../set.hpp"
 
 #define TESTED_NAMESPACE ft
 
@@ -34,24 +35,25 @@ class foo {
 		bool		_verbose;
 };
 
-#define T1 int
-#define T2 std::string
+#define T1 foo<int>
+// #define T2 std::string
 #define _pair TESTED_NAMESPACE::pair
 
 // typedef TESTED_NAMESPACE::map<T1, T2>::value_type T3;
 
-TESTED_NAMESPACE::map<T1, T2> mp;
-TESTED_NAMESPACE::map<T1, T2>::iterator it = mp.end();
-typedef _pair<const T1, T2> T3;
+typedef TESTED_NAMESPACE::set<T1>::iterator ft_iterator;
+typedef TESTED_NAMESPACE::set<T1>::const_iterator ft_const_iterator;
+// typedef _pair<const T1, T2> T3;
 
 // typedef _pair<const T1, T2> T3;
 
 // static unsigned int i = 0;
+// static int iter = 0;
 
 template <typename T>
 std::string	printPair(const T &iterator, bool nl = true, std::ostream &o = std::cout)
 {
-	o << "key: " << iterator->first << " | value: " << iterator->second;
+	o << "value: " << *iterator;
 	if (nl)
 		o << std::endl;
 	return ("");
@@ -94,65 +96,86 @@ T	dec(T it, int n)
 	return (it);
 }
 
-template <typename TT1, typename TT2>
-void	printReverse(TESTED_NAMESPACE::map<TT1, TT2> &mp)
-{
-	typename TESTED_NAMESPACE::map<TT1, TT2>::iterator it = mp.end(), ite = mp.begin();
+// template <typename TT1, typename TT2>
+// void	printReverse(TESTED_NAMESPACE::map<TT1, TT2> &mp)
+// {
+// 	typename TESTED_NAMESPACE::map<TT1, TT2>::iterator it = mp.end(), ite = mp.begin();
 
-	std::cout << "printReverse:" << std::endl;
-	while (it != ite) {
-		it--;
-		std::cout << "-> " << printPair(it, false) << std::endl;
-	}
-	std::cout << "_______________________________________________" << std::endl;
-}
+// 	std::cout << "printReverse:" << std::endl;
+// 	while (it != ite) {
+// 		it--;
+// 		std::cout << "-> " << printPair(it, false) << std::endl;
+// 	}
+// 	std::cout << "_______________________________________________" << std::endl;
+// }
 
-void	ft_find(T1 const &k)
-{
-	TESTED_NAMESPACE::map<T1, T2>::iterator ret = mp.find(k);
+// template <typename SET>
+// void	ft_bound(SET &st, const T1 &param)
+// {
+// 	ft_iterator ite = st.end(), it[2];
+// 	_pair<ft_iterator, ft_iterator> ft_range;
 
-	if (ret != it)
-		printPair(ret);
-	else
-		std::cout << "map::find(" << k << ") returned end()" << std::endl;
-}
+// 	std::cout << "\t-- [" << iter++ << "] --" << std::endl;
+// 	std::cout << "with key [" << param << "]:" << std::endl;
+// 	it[0] = st.lower_bound(param); it[1] = st.upper_bound(param);
+// 	ft_range = st.equal_range(param);
+// 	std::cout << "lower_bound: " << (it[0] == ite ? "end()" : printPair(it[0], false)) << std::endl;
+// 	std::cout << "upper_bound: " << (it[1] == ite ? "end()" : printPair(it[1], false)) << std::endl;
+// 	std::cout << "equal_range: " << (ft_range.first == it[0] && ft_range.second == it[1]) << std::endl;
+// }
 
-void	ft_count(T1 const &k)
-{
-	std::cout << "map::count(" << k << ")\treturned [" << mp.count(k) << "]" << std::endl;
-}
+// template <typename SET>
+// void	ft_const_bound(const SET &st, const T1 &param)
+// {
+// 	ft_const_iterator ite = st.end(), it[2];
+// 	_pair<ft_const_iterator, ft_const_iterator> ft_range;
+
+// 	std::cout << "\t-- [" << iter++ << "] (const) --" << std::endl;
+// 	std::cout << "with key [" << param << "]:" << std::endl;
+// 	it[0] = st.lower_bound(param); it[1] = st.upper_bound(param);
+// 	ft_range = st.equal_range(param);
+// 	std::cout << "lower_bound: " << (it[0] == ite ? "end()" : printPair(it[0], false)) << std::endl;
+// 	std::cout << "upper_bound: " << (it[1] == ite ? "end()" : printPair(it[1], false)) << std::endl;
+// 	std::cout << "equal_range: " << (ft_range.first == it[0] && ft_range.second == it[1]) << std::endl;
+// }
 
 int		main(void)
 {
-	mp[42] = "fgzgxfn";
-	mp[25] = "funny";
-	mp[80] = "hey";
-	mp[12] = "no";
-	mp[27] = "bee";
-	mp[90] = "8";
-	printSize(mp);
+	std::list<T1> lst;
+	unsigned int lst_size = 5;
+	for (unsigned int i = 0; i < lst_size; ++i)
+		lst.push_back((i + 1) * 7);
 
-	std::cout << "\t-- FIND --" << std::endl;
-	ft_find(12);
-	ft_find(3);
-	ft_find(35);
-	ft_find(90);
-	ft_find(100);
+	TESTED_NAMESPACE::set<T1> st(lst.begin(), lst.end());
+	TESTED_NAMESPACE::set<T1>::reverse_iterator it(st.rbegin());
+	TESTED_NAMESPACE::set<T1>::const_reverse_iterator ite(st.rbegin());
+	printSize(st);
 
-	std::cout << "\t-- COUNT --" << std::endl;
-	ft_count(-3);
-	ft_count(12);
-	ft_count(3);
-	ft_count(35);
-	ft_count(90);
-	ft_count(100);
+	printPair(++ite);
+	printPair(ite++);
+	printPair(ite++);
+	printPair(++ite);
 
-	mp.find(27)->second = "newly inserted mapped_value";
+	it->m();
+	ite->m();
 
-	printSize(mp);
+	printPair(++it);
+	printPair(it++);
+	printPair(it++);
+	printPair(++it);
 
-	TESTED_NAMESPACE::map<T1, T2> const c_map(mp.begin(), mp.end());
-	std::cout << "const map.find(" << 42 << ")->second: [" << c_map.find(42)->second << "]" << std::endl;
-	std::cout << "const map.count(" << 80 << "): [" << c_map.count(80) << "]" << std::endl;
+	printPair(--ite);
+	printPair(ite--);
+	printPair(--ite);
+	printPair(ite--);
+
+	(*it).m();
+	(*ite).m();
+
+	printPair(--it);
+	printPair(it--);
+	printPair(it--);
+	printPair(--it);
+
 	return (0);
 }

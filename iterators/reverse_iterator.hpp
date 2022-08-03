@@ -14,6 +14,8 @@ public:
 	typedef typename Iterator::difference_type	difference_type;
 	typedef typename Iterator::reference		reference;
 	typedef typename Iterator::pointer			pointer;
+	typedef typename Iterator::const_reference		const_reference;
+	typedef typename Iterator::const_pointer			const_pointer;
 
 	explicit reverse_iterator(iterator_type x = 0) : current(x) { }
 
@@ -29,8 +31,11 @@ public:
 		return *this;
 	}
 
-	reference operator*() const { iterator_type tmp = current; return *(--tmp); }
-	pointer operator->() const { return (&(operator*())); }
+	reference operator*() { iterator_type tmp = current; return *(--tmp); }
+	pointer operator->() { return (&(operator*())); }
+	
+	const_reference operator*() const { iterator_type tmp = current; return *(--tmp); }
+	const_pointer operator->() const { return (&(operator*())); }
 
 	reverse_iterator &operator++() { --current; return (*this); }
 	reverse_iterator operator++(int) { reverse_iterator tmp(*this); --current; return (tmp); }

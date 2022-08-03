@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../iterators/map_iterator.hpp"
+#include "../iterators/node_iterator.hpp"
 #include "../iterators/reverse_iterator.hpp"
 #include "../utils/utils.hpp"
 
@@ -24,8 +24,8 @@ public:
 	typedef typename allocator_type::const_pointer										const_pointer;
 	typedef ptrdiff_t																	difference_type;
 	typedef	size_t																		size_type;
-	typedef ft::map_iterator<value_type>												iterator;
-	typedef ft::map_iterator<const value_type>											const_iterator;
+	typedef ft::node_iterator<value_type>												iterator;
+	typedef ft::node_iterator<const value_type>											const_iterator;
 	typedef ft::reverse_iterator<iterator>												reverse_iterator;
 	typedef ft::reverse_iterator<const_iterator>										const_reverse_iterator;
 private:
@@ -478,7 +478,8 @@ public:
 	{
 		for (; first != last; ++first)
 		{
-			insert(ft::make_pair(first->first, first->second));
+			// insert(ft::make_pair(first->first, first->second));
+			insert(*first);
 		}
 		
 	}
@@ -661,7 +662,8 @@ public:
 			Node<value_type> *current = _root;
 
 			while (!_is_nil(current)) {
-				if (k.first == current->_val->first)
+				// if (k.first == current->_val->first)
+				if (!_comp(k, *current->_val) && !_comp(*current->_val, k))
 					return iterator(current);
 				else {
 					if (_comp(k, *(current->_val))) {
@@ -686,7 +688,8 @@ public:
 			node_pointer current = _root;
 
 			while (!_is_nil(current)) {
-				if (k.first == current->_val->first)
+				// if (k.first == current->_val->first)
+				if (!_comp(k, *current->_val) && !_comp(*current->_val, k))
 					return const_iterator(current);
 				else {
 					if (_comp(k, *(current->_val))) {

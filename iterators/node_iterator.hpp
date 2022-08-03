@@ -25,16 +25,19 @@ namespace ft
 	// };
 
 	template <typename T>
-	class map_iterator
+	class node_iterator
 	{
 	public:
 		typedef ft::bidirectional_iterator_tag												iterator_category;
 		typedef typename ft::iterator_traits<T*>::value_type								value_type;
 		typedef typename ft::iterator_traits<T*>::reference									reference;
 		typedef typename ft::iterator_traits<T*>::pointer									pointer;
+		typedef typename ft::iterator_traits<const T*>::reference									const_reference;
+		typedef typename ft::iterator_traits<const T*>::pointer									const_pointer;
 		typedef typename ft::iterator_traits<T*>::difference_type							difference_type;
-		typedef Node<typename ft::remove_const<value_type>::type>*							node_pointer;
-		// typedef Node<value_type>*							node_pointer;
+		// typedef Node<typename ft::remove_const<value_type>::type>*							node_pointer;
+		typedef Node<value_type>*							node_pointer;
+		// typedef Node<const value_type>*							const_node_pointer;
 	protected:
 		node_pointer _iter;
 
@@ -55,28 +58,40 @@ namespace ft
 			return n;
 		}
 	public:
-		map_iterator() {};
-		map_iterator(node_pointer x) : _iter(x) {}
-		map_iterator(const map_iterator<typename ft::remove_const<value_type>::type>& x) { *this = x; }
-		map_iterator& operator= (const map_iterator<typename ft::remove_const<value_type>::type>& x)
+		node_iterator() {};
+		node_iterator(node_pointer x) : _iter(x) {}
+		node_iterator(const node_iterator<value_type>& x) : _iter(x.iter()) {}
+		node_iterator& operator= (const node_iterator<value_type>& x)
 		{
 			_iter = x.iter();
 			return *this;
 		}
 
-		pointer operator->() const {
+		pointer operator->() {
 			return _iter->_val;
 		}
 
-		reference operator*() const {
+		reference operator*() {
 			return *(_iter->_val);
+		}
+
+		const_pointer operator->() const{
+			return _iter->_val;
+		}
+
+		const_reference operator*() const {
+			return *(_iter->_val);
+		}
+
+		node_pointer iter() {
+			return _iter;
 		}
 
 		node_pointer iter() const {
 			return _iter;
 		}
 
-		map_iterator& operator++()
+		node_iterator& operator++()
 		{
 			if (_iter->_right && !_iter->_right->_isNil)
 			{
@@ -93,7 +108,7 @@ namespace ft
 			return *this;
 		}
 
-		map_iterator& operator--()
+		node_iterator& operator--()
 		{
 			if (_iter->_left && !_iter->_left->_isNil)
 			{
@@ -110,8 +125,8 @@ namespace ft
 			return *this;
 		}
 
-		map_iterator operator++(int) {
-			map_iterator temp = *this;
+		node_iterator operator++(int) {
+			node_iterator temp = *this;
 			if (!_iter->_right->_isNil) {
 				_iter = tree_min(_iter->_right);
 			}
@@ -126,8 +141,8 @@ namespace ft
 			return temp;
 		}
 
-		map_iterator operator--(int) {
-			map_iterator temp = *this;
+		node_iterator operator--(int) {
+			node_iterator temp = *this;
 			if (_iter->_left &&!_iter->_left->_isNil) {
 				_iter = tree_max(_iter->_left);
 			}
@@ -144,12 +159,12 @@ namespace ft
 	};
 
 	template<typename A, typename B>
-	bool operator==(const map_iterator<A> & lhs, const map_iterator<B> & rhs){
+	bool operator==(const node_iterator<A> & lhs, const node_iterator<B> & rhs){
 		return (lhs.iter() == rhs.iter());
 	}
 
 	template<typename A, typename B>
-	bool operator!=(const map_iterator<A> & lhs, const map_iterator<B> & rhs){
+	bool operator!=(const node_iterator<A> & lhs, const node_iterator<B> & rhs){
 		return (lhs.iter() != rhs.iter());
 	}
 }
