@@ -4,40 +4,16 @@
 
 namespace ft
 {
-	// template <class T>
-	// struct iterator_traits<T*>
-	// {
-	// 	typedef ptrdiff_t						difference_type;
-	// 	typedef T								value_type;
-	// 	typedef T*								pointer;
-	// 	typedef T&								reference;
-	// 	typedef ft::bidirectional_iterator_tag	iterator_category;
-	// };
-
-	// template <class T>
-	// struct iterator_traits<const T*>
-	// {
-	// 	typedef ptrdiff_t						difference_type;
-	// 	typedef const T							value_type;
-	// 	typedef const T*						pointer;
-	// 	typedef const T&						reference;
-	// 	typedef ft::bidirectional_iterator_tag	iterator_category;
-	// };
-
 	template <typename T>
 	class node_iterator
 	{
 	public:
-		typedef ft::bidirectional_iterator_tag												iterator_category;
-		typedef typename ft::iterator_traits<T*>::value_type								value_type;
-		typedef typename ft::iterator_traits<T*>::reference									reference;
-		typedef typename ft::iterator_traits<T*>::pointer									pointer;
-		// typedef typename ft::iterator_traits<const T*>::reference									const_reference;
-		// typedef typename ft::iterator_traits<const T*>::pointer									const_pointer;
-		typedef typename ft::iterator_traits<T*>::difference_type							difference_type;
-		// typedef Node<typename ft::remove_const<value_type>::type>*							node_pointer;
-		typedef Node<value_type>*							node_pointer;
-		// typedef Node<const value_type>*							const_node_pointer;
+		typedef ft::bidirectional_iterator_tag						iterator_category;
+		typedef typename ft::iterator_traits<T*>::value_type		value_type;
+		typedef typename ft::iterator_traits<T*>::reference			reference;
+		typedef typename ft::iterator_traits<T*>::pointer			pointer;
+		typedef typename ft::iterator_traits<T*>::difference_type	difference_type;
+		typedef ft::Node<value_type>*									node_pointer;
 	protected:
 		node_pointer _iter;
 
@@ -56,6 +32,7 @@ namespace ft
 				n = n->_right;
 			return n;
 		}
+
 	public:
 		node_iterator() {};
 		node_iterator(node_pointer x) : _iter(x) {}
@@ -66,29 +43,10 @@ namespace ft
 			return *this;
 		}
 
-		pointer operator->() const {
-			return _iter->_val;
-		}
-
-		reference operator*() const {
-			return *(_iter->_val);
-		}
-
-		// const_pointer operator->() const{
-		// 	return _iter->_val;
-		// }
-
-		// const_reference operator*() const {
-		// 	return *(_iter->_val);
-		// }
-
-		node_pointer iter() {
-			return _iter;
-		}
-
-		node_pointer iter() const {
-			return _iter;
-		}
+		pointer operator->() const { return _iter->_val; }
+		reference operator*() const { return *(_iter->_val); }
+		node_pointer iter() { return _iter; }
+		node_pointer iter() const { return _iter; }
 
 		node_iterator& operator++()
 		{
@@ -124,8 +82,10 @@ namespace ft
 			return *this;
 		}
 
-		node_iterator operator++(int) {
+		node_iterator operator++(int)
+		{
 			node_iterator temp = *this;
+
 			if (!_iter->_right->_isNil) {
 				_iter = tree_min(_iter->_right);
 			}
@@ -140,8 +100,10 @@ namespace ft
 			return temp;
 		}
 
-		node_iterator operator--(int) {
+		node_iterator operator--(int)
+		{
 			node_iterator temp = *this;
+			
 			if (_iter->_left &&!_iter->_left->_isNil) {
 				_iter = tree_max(_iter->_left);
 			}

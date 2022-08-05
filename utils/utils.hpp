@@ -3,38 +3,39 @@
 #include <iostream>
 #include <iterator>
 
-template <class value_type>
-struct Node
-{
-	public:
-	explicit Node(value_type* other = NULL) :
-			_isRed(true), _isNil(false), _parent(NULL), _left(NULL), _right(NULL), _val(other) {}
-
-	bool		_isRed;
-	bool		_isNil;
-	Node* 		_parent;
-	Node*		_left;
-	Node*		_right; 
-	value_type*	_val;
-
-	Node(const Node& other) { *this = other; }
-
-	Node& operator=(const Node<value_type>& other)
-	{
-		_isRed = other._isRed;
-		_isNil = other._isNil;
-		_parent = other._parent;
-		_left = other._left;
-		_right = other._right;
-		_val = other._val;
-		return *this;
-	}
-
-	virtual ~Node() {}
-};
 
 namespace ft
 {
+	template <class value_type>
+	struct Node
+	{
+		public:
+		explicit Node(value_type* other = NULL) :
+				_isRed(true), _isNil(false), _parent(NULL), _left(NULL), _right(NULL), _val(other) {}
+
+		bool		_isRed;
+		bool		_isNil;
+		Node* 		_parent;
+		Node*		_left;
+		Node*		_right; 
+		value_type*	_val;
+
+		Node(const Node& other) { *this = other; }
+
+		Node& operator=(const Node<value_type>& other)
+		{
+			_isRed = other._isRed;
+			_isNil = other._isNil;
+			_parent = other._parent;
+			_left = other._left;
+			_right = other._right;
+			_val = other._val;
+			return *this;
+		}
+
+		virtual ~Node() {}
+	};
+	
 	template <class S1, class S2>
 	void ft_swap (S1 &a, S2 &b)
 	{
@@ -92,18 +93,6 @@ namespace ft
 		typedef Reference	reference;
 		typedef Category	iterator_category;
 	};	
-
-	template<class T>
-	struct remove_const
-	{
-		typedef T type;
-	};
-
-	template<class T>
-	struct remove_const <const T>
-	{
-		typedef T type;
-	};
 	
 // #######################################################################################
 // Enable if
@@ -206,38 +195,44 @@ namespace ft
 			return *this;
 		}
 	};
-///*
+
 	template <class T1, class T2>
-	bool operator==(const pair<T1, T2> &lhs, const pair<T1, T2> &rhs) {
+	bool operator==(const pair<T1, T2> &lhs, const pair<T1, T2> &rhs)
+	{
 		return lhs.first == rhs.first && lhs.second == rhs.second;
 	}
 
 	template <class T1, class T2>
-	bool operator!=(const pair<T1, T2> &lhs, const pair<T1, T2> &rhs) {
+	bool operator!=(const pair<T1, T2> &lhs, const pair<T1, T2> &rhs)
+	{
 		return !(lhs == rhs);
 	}
 
 	template <class T1, class T2>
-	bool operator<(const pair<T1, T2> &lhs, const pair<T1, T2> &rhs) {
+	bool operator<(const pair<T1, T2> &lhs, const pair<T1, T2> &rhs)
+	{
 		return lhs.first < rhs.first ||
 			(!(rhs.first < lhs.first) && lhs.second < rhs.second);
 	}
 
 	template <class T1, class T2>
-	bool operator<=(const pair<T1, T2> &lhs, const pair<T1, T2> &rhs) {
+	bool operator<=(const pair<T1, T2> &lhs, const pair<T1, T2> &rhs)
+	{
 		return !(rhs < lhs);
 	}
 
 	template <class T1, class T2>
-	bool operator>(const pair<T1, T2> &lhs, const pair<T1, T2> &rhs) {
+	bool operator>(const pair<T1, T2> &lhs, const pair<T1, T2> &rhs)
+	{
 		return rhs < lhs;
 	}
 
 	template <class T1, class T2>
-	bool operator>=(const pair<T1, T2> &lhs, const pair<T1, T2> &rhs) {
+	bool operator>=(const pair<T1, T2> &lhs, const pair<T1, T2> &rhs)
+	{
 		return !(lhs < rhs);
 	}
-//*/
+
 	template <class T1,class T2>
 	pair<T1,T2> make_pair (T1 x, T2 y)
 	{
