@@ -22,7 +22,7 @@ namespace ft
 		typedef typename allocator_type::const_pointer		const_pointer;
 		typedef ptrdiff_t									difference_type;
 		typedef	size_t										size_type;
-		// typedef typename allocator_type::template rebind<Tree<value_type, Compare, Alloc> >::other	tree_allocator; 
+		typedef typename allocator_type::template rebind<Tree<value_type, Compare, Alloc> >::other	tree_allocator; 
 
 	private:
 		class value_compare {
@@ -38,13 +38,13 @@ namespace ft
 	
 	public:
 		typedef Tree<value_type, value_compare, allocator_type>		tree_type;
-		// typedef Node<value_type>									node_type;
+		typedef Node<value_type>									node_type;
 		typedef	typename tree_type::iterator						iterator;
 		typedef	typename tree_type::const_iterator					const_iterator;
 		typedef	typename tree_type::reverse_iterator				reverse_iterator;
 		typedef	typename tree_type::const_reverse_iterator			const_reverse_iterator;
 	private:
-		// tree_allocator	_tree_alloc;
+		tree_allocator	_tree_alloc;
 		allocator_type	_alloc;
 		key_compare		_comp;
 		tree_type		_tree;
@@ -141,8 +141,9 @@ namespace ft
 
 		size_type max_size() const
 		{
-			return _tree.max_size();
-			// return std::min<size_type> (_tree_alloc.max_size(), (std::numeric_limits<difference_type >::max() / sizeof(node_type)));
+			// return _tree.max_size();
+			return std::min<size_type> (_tree_alloc.max_size(), (std::numeric_limits<difference_type>::max() / sizeof(value_type)));
+			// return std::numeric_limits<difference_type>::max() / (sizeof(value_type) + sizeof(node_type));
 		}
 
 // #######################################################################################

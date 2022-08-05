@@ -53,6 +53,8 @@ private:
 		_nil->_isNil = true;
 		_end = _alloc_node.allocate(1);
 		_alloc_node.construct(_end, Node<value_type>());
+		_end->_val = _alloc_val.allocate(1);
+		_alloc_val.construct(_end->_val, value_type());
 		_end->_isRed = false;
 	}
 
@@ -67,7 +69,7 @@ private:
 	
 	node_pointer	_tree_min(node_pointer n) const
 	{
-		while (n != NULL && !_is_nil(n->_left))
+		while (n != NULL && n->_left != _nil)
 			n = n->_left;
 		return n;
 	}
@@ -224,13 +226,11 @@ private:
 	// Balance after insert
 	// ——————————————————————————————————————————————————————————————————————
 
-	node_pointer _balance_after_insert(node_pointer node)
+	void _balance_after_insert(node_pointer node)
 	{
-		if (node != _root)
+		while (node != _root && node->_parent->_isRed)
 		{
-			if (!node->_parent->_isRed)
-				return node;
-			if (node->_parent->_parent->_left == node->_parent)
+			if (node->_parent == node->_parent->_parent->_left)
 			{
 				node_pointer uncle = node->_parent->_parent->_right;
 				if (uncle->_isRed)
@@ -238,19 +238,18 @@ private:
 					node->_parent->_isRed = false;
 					uncle->_isRed = false;
 					node->_parent->_parent->_isRed = true;
-					return _balance_after_insert(node->_parent->_parent);
+					node = node->_parent->_parent;
 				}
-				else
+				else 
 				{
-					if (node->_parent->_right == node)
+					if (node == node->_parent->_right)
 					{
 						node = node->_parent;
 						_rotate_left(node);
 					}
-					_rotate_right(node->_parent->_parent);
-					node->_parent->_right->_isRed = true;
 					node->_parent->_isRed = false;
-					return node;
+					node->_parent->_parent->_isRed = true;
+					_rotate_right(node->_parent->_parent);
 				}
 			}
 			else
@@ -261,25 +260,79 @@ private:
 					node->_parent->_isRed = false;
 					uncle->_isRed = false;
 					node->_parent->_parent->_isRed = true;
-					return _balance_after_insert(node->_parent->_parent);
+					node = node->_parent->_parent;
 				}
-				else
+				else 
 				{
-					if (node->_parent->_left == node)
+					if (node == node->_parent->_left)
 					{
 						node = node->_parent;
 						_rotate_right(node);
 					}
-					_rotate_left(node->_parent->_parent);
-					node->_parent->_left->_isRed = true;
 					node->_parent->_isRed = false;
-					return node;
+					node->_parent->_parent->_isRed = true;
+					_rotate_left(node->_parent->_parent);
 				}
 			}
 		}
-		node->_isRed = false;
-		return node;
+		_root->_isRed = false;
 	}
+	// node_pointer _balance_after_insert(node_pointer node)
+	// {
+	// 	if (node != _root)
+	// 	{
+	// 		if (!node->_parent->_isRed)
+	// 			return node;
+	// 		if (node->_parent->_parent->_left == node->_parent)
+	// 		{
+	// 			node_pointer uncle = node->_parent->_parent->_right;
+	// 			if (uncle->_isRed)
+	// 			{
+	// 				node->_parent->_isRed = false;
+	// 				uncle->_isRed = false;
+	// 				node->_parent->_parent->_isRed = true;
+	// 				return _balance_after_insert(node->_parent->_parent);
+	// 			}
+	// 			else
+	// 			{
+	// 				if (node->_parent->_right == node)
+	// 				{
+	// 					node = node->_parent;
+	// 					_rotate_left(node);
+	// 				}
+	// 				_rotate_right(node->_parent->_parent);
+	// 				node->_parent->_right->_isRed = true;
+	// 				node->_parent->_isRed = false;
+	// 				return node;
+	// 			}
+	// 		}
+	// 		else
+	// 		{
+	// 			node_pointer uncle = node->_parent->_parent->_left;
+	// 			if (uncle->_isRed)
+	// 			{
+	// 				node->_parent->_isRed = false;
+	// 				uncle->_isRed = false;
+	// 				node->_parent->_parent->_isRed = true;
+	// 				return _balance_after_insert(node->_parent->_parent);
+	// 			}
+	// 			else
+	// 			{
+	// 				if (node->_parent->_left == node)
+	// 				{
+	// 					node = node->_parent;
+	// 					_rotate_right(node);
+	// 				}
+	// 				_rotate_left(node->_parent->_parent);
+	// 				node->_parent->_left->_isRed = true;
+	// 				node->_parent->_isRed = false;
+	// 				return node;
+	// 			}
+	// 		}
+	// 	}
+	// 	_root->_isRed = false;
+	// 	return node;
+	// }
 
 public:
 
@@ -344,6 +397,8 @@ public:
 	~Tree()
 	{
 		_clear_node(_root);
+		_alloc_val.destroy(_end->_val);
+		_alloc_val.deallocate(_end->_val, 1);
 		_alloc_node.deallocate(_nil, 1);
 		_alloc_node.deallocate(_end, 1);
 	}
@@ -434,7 +489,7 @@ public:
 		return ret;
 	}
 
-	iterator insert (iterator position, const value_type& val)
+	iterator insert (const_iterator position, const value_type& val)
 	{
 		node_pointer newNode = _find_node(val, _root);
 		if (newNode)
@@ -520,26 +575,100 @@ public:
 			_alloc_node.deallocate(node, 1);
 		}
 
-	void erase(iterator pos){
-			node_pointer y = pos.iter(), x, for_free = y;
-			bool y_original_is_red = y->_isRed;
-			if (_is_nil(y->_left)){
-				x = y->_right;
-				transplant(y, y->_right);
+
+	void erase_fixup(node_pointer x){
+		node_pointer brother;
+		while (x != _root && !x->_isRed)
+		{
+			if (x == x->_parent->_left)
+			{
+				brother = x->_parent->_right;
+				if (brother->_isRed)
+				{
+					brother->_isRed = false;
+					x->_parent->_isRed = true;
+					_rotate_left(x->_parent);
+					brother = x->_parent->_right;
+				}
+				if (!brother->_left->_isRed && !brother->_right->_isRed)
+				{
+					brother->_isRed = true;
+					x = x->_parent;
+				}
+				else
+				{
+					if (!brother->_right->_isRed)
+					{
+						brother->_left->_isRed = false;
+						brother->_isRed = true;
+						_rotate_right(brother);
+						brother = x->_parent->_right;
+					}
+					brother->_isRed = x->_parent->_isRed;
+					x->_parent->_isRed = false;
+					brother->_right->_isRed = false;
+					_rotate_left(x->_parent);
+					x = _root;
+				}
 			}
-			else if (_is_nil(y->_right)){
-				x = y->_left;
-				transplant(y, y->_left);
+			else
+			{
+				brother = x->_parent->_left;
+				if (brother->_isRed)
+				{
+					brother->_isRed = false;
+					x->_parent->_isRed = true;
+					_rotate_right(x->_parent);
+					brother = x->_parent->_left;
+				}
+				if (!brother->_left->_isRed && !brother->_left->_isRed)
+				{
+					brother->_isRed = true;
+					x = x->_parent;
+				}
+				else
+				{
+					if (!brother->_left->_isRed)
+					{
+						brother->_left->_isRed = false;
+						brother->_isRed = true;
+						_rotate_left(brother);
+						brother = x->_parent->_left;
+					}
+					brother->_isRed = x->_parent->_isRed;
+					x->_parent->_isRed = false;
+					brother->_left->_isRed = false;
+					_rotate_right(x->_parent);
+					x = _root;
+				}
+			}
+		}
+		x->_isRed = false;
+	}
+
+	void erase(const_iterator pos){
+			node_pointer y = pos.iter(), x, z = y , for_free = y;
+			bool y_original_is_red = y->_isRed;
+			if (_is_nil(z->_left)){
+				x = z->_right;
+				transplant(z, z->_right);
+			}
+			else if (_is_nil(z->_right)){
+				x = z->_left;
+				transplant(z, z->_left);
 			}
 			else {
-				node_pointer z = y;
 				y = _tree_min(z->_right);
 				y_original_is_red = y->_isRed;
 				x = y->_right;
-				if (y->_parent != z){
+				if (y->_parent == z){
+					x->_parent = y;
+				}
+				else
+				{
 					transplant(y, y->_right);
 					y->_right = z->_right;
-					z->_right->_parent = y;
+					y->_right->_parent = y;
 				}
 				transplant(z, y);
 				y->_left = z->_left;
@@ -547,13 +676,14 @@ public:
 				y->_isRed = z->_isRed;
 			}
 			free_node(for_free);
-			if (y_original_is_red)
+			if (!y_original_is_red)
 				erase_fixup(x);
 			_size--;
 			_nil->_parent = NULL;
 			if (_size == 0)
 				_root = _end;
-			else{
+			else
+			{
 				if (_size != 1)
 					x = _tree_max(_root);
 				else
@@ -570,75 +700,9 @@ public:
 			return (res != NULL);
 		}
 
-		void erase(iterator first, iterator last){
+		void erase(const_iterator first, const_iterator last){
 			while (first != last)
 				erase(first++);
-		}
-
-		void erase_fixup(node_pointer x){
-			node_pointer brother;
-			while (x != _root && x->_isRed){
-				if (x == x->_parent->_left){
-					brother = x->_parent->_right;
-					//case 1
-					if (!brother->_isRed){
-						brother->_isRed = true;
-						x->_parent->_isRed = false;
-						_rotate_left(x->_parent);
-						brother = x->_parent->_right;
-					}
-					//case 2
-					if (brother->_left->_isRed && brother->_right->_isRed){
-						brother->_isRed = false;
-						x = x->_parent;
-					}
-					else{
-					//case 3
-						if (brother->_right->_isRed){
-							brother->_left->_isRed = true;
-							brother->_isRed = false;
-							_rotate_right(brother);
-							brother = x->_parent->_right;
-						}
-					//case 4
-						brother->_isRed = x->_parent->_isRed;
-						x->_parent->_isRed = true;
-						brother->_right->_isRed = true;
-						_rotate_left(x->_parent);
-						x = _root;
-					}
-				}
-				else{
-					brother = x->_parent->_left;
-					//case 1
-					if (!brother->_isRed){
-						brother->_isRed = true;
-						x->_parent->_isRed = false;
-						_rotate_right(x->_parent);
-						brother = x->_parent->_left;
-					}
-					//case 2
-					if (brother->_right->_isRed && brother->_left->_isRed){
-						brother->_isRed = false;
-						x = x->_parent;
-					}
-					else{
-					//case 3
-						if (brother->_left->_isRed){
-							brother->_right->_isRed = true;
-							brother->_isRed = false;
-							_rotate_left(brother);
-							brother = x->_parent->_left;
-						}
-					//case 4
-						brother->_isRed = x->_parent->_isRed;
-						x->_parent->_isRed = true;
-						brother->_left->_isRed = true;
-						_rotate_right(x->_parent);
-						x = _root;
-					}
-				}
-			}
 		}
 
 		val_compare value_comp() const {

@@ -40,9 +40,9 @@ namespace ft
 	public:
 		typedef Tree<value_type, value_compare, allocator_type>		tree_type;
 		typedef Node<value_type>									node_type;
-		typedef	typename tree_type::iterator						iterator;
+		typedef	typename tree_type::const_iterator						iterator;
 		typedef	typename tree_type::const_iterator					const_iterator;
-		typedef	typename tree_type::reverse_iterator				reverse_iterator;
+		typedef	typename tree_type::const_reverse_iterator			reverse_iterator;
 		typedef	typename tree_type::const_reverse_iterator			const_reverse_iterator;
 	private:
 		tree_allocator	_tree_alloc;
@@ -143,8 +143,11 @@ namespace ft
 
 		size_type max_size() const
 		{
-			return _tree.max_size();
-			// return std::min<size_type> (_tree_alloc.max_size(), (std::numeric_limits<difference_type >::max() / sizeof(value_type)));
+			// return std::min<size_type> (_tree_alloc.max_size(), (std::numeric_limits<difference_type>::max() / sizeof(node_type)));
+			return _node_alloc.max_size() + std::numeric_limits<difference_type>::max() / sizeof(node_type); // <- оно
+			// return std::min<size_type> (_node_alloc.max_size(), (_node_alloc.max_size() + std::numeric_limits<difference_type>::max() / sizeof(node_type)));
+			// return _alloc.max_size();
+			// return std::min<size_type> (_node_alloc.max_size(), (std::numeric_limits<size_type>::max() / sizeof(node_type)));
 		}
 
 // #######################################################################################

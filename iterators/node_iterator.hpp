@@ -32,8 +32,8 @@ namespace ft
 		typedef typename ft::iterator_traits<T*>::value_type								value_type;
 		typedef typename ft::iterator_traits<T*>::reference									reference;
 		typedef typename ft::iterator_traits<T*>::pointer									pointer;
-		typedef typename ft::iterator_traits<const T*>::reference									const_reference;
-		typedef typename ft::iterator_traits<const T*>::pointer									const_pointer;
+		// typedef typename ft::iterator_traits<const T*>::reference									const_reference;
+		// typedef typename ft::iterator_traits<const T*>::pointer									const_pointer;
 		typedef typename ft::iterator_traits<T*>::difference_type							difference_type;
 		// typedef Node<typename ft::remove_const<value_type>::type>*							node_pointer;
 		typedef Node<value_type>*							node_pointer;
@@ -43,7 +43,6 @@ namespace ft
 
 		node_pointer tree_min(node_pointer n) const
 		{
-			// std::cout << "TEST " << std::endl;
 			while (n->_left != NULL && !n->_left->_isNil)
 			{
 				n = n->_left;
@@ -67,21 +66,21 @@ namespace ft
 			return *this;
 		}
 
-		pointer operator->() {
+		pointer operator->() const {
 			return _iter->_val;
 		}
 
-		reference operator*() {
+		reference operator*() const {
 			return *(_iter->_val);
 		}
 
-		const_pointer operator->() const{
-			return _iter->_val;
-		}
+		// const_pointer operator->() const{
+		// 	return _iter->_val;
+		// }
 
-		const_reference operator*() const {
-			return *(_iter->_val);
-		}
+		// const_reference operator*() const {
+		// 	return *(_iter->_val);
+		// }
 
 		node_pointer iter() {
 			return _iter;
